@@ -25,7 +25,7 @@ namespace NostrBotSharp
             };
 
             // Connect relay.
-            var connector = new NostrConnector(NullLogger<NostrWebsocketClient>.Instance, relays);
+            var connector = new NostrConnector(NostrLogger<NostrWebsocketClient>.Instance, relays);
             var client = connector.Connect();
             connector.Communicate();
 
