@@ -4,6 +4,9 @@ using System.Reactive.Linq;
 
 namespace NostrBotSharp.Wrapper
 {
+    /// <summary>
+    /// Class for subscribing Nostr relay data.
+    /// </summary>
     public class NostrSubscriber
     {
         public delegate void SubscribeCallback(NostrEventResponse response);
@@ -11,6 +14,11 @@ namespace NostrBotSharp.Wrapper
         private readonly INostrClient client;
         private readonly SubscribeCallback callback;
 
+        /// <summary>
+        /// Validate before subscribe
+        /// </summary>
+        /// <param name="response">Nostr event response</param>
+        /// <exception cref="ArgumentNullException">Exception when event data is null</exception>
         private void Validate(NostrEventResponse response)
         {
             if ((response.Event == null) ||
@@ -23,12 +31,20 @@ namespace NostrBotSharp.Wrapper
             }
         }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="client">Nostr client interface</param>
+        /// <param name="callback">Subscribe callback</param>
         public NostrSubscriber(INostrClient client, SubscribeCallback callback)
         {
             this.client = client;
             this.callback = callback;
         }
 
+        /// <summary>
+        /// Callback when subscribed.
+        /// </summary>
         public void Subscribe()
         {
             IObservable<NostrEventResponse> events = 

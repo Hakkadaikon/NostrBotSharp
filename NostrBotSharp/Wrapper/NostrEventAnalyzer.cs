@@ -4,6 +4,9 @@ using Nostr.Client.Messages.Metadata;
 
 namespace NostrBotSharp.Wrapper
 {
+    /// <summary>
+    /// Class for analyzing Nostr event.
+    /// </summary>
     public class NostrEventAnalyzer
     {
         public static class Contact

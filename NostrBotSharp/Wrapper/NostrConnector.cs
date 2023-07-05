@@ -5,18 +5,31 @@ using System.Net.WebSockets;
 
 namespace NostrBotSharp.Wrapper
 {
+    /// <summary>
+    /// Class for connecting with Nostr relay.
+    /// </summary>
     public class NostrConnector
     {
         private List<NostrWebsocketCommunicator> communicators;
         private readonly ILogger<NostrWebsocketClient> logger;
         private readonly Uri[] relays;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="logger">Nostr logger.</param>
+        /// <param name="relays">Nostr relay uris.</param>
         public NostrConnector(ILogger<NostrWebsocketClient> logger, Uri[] relays)
         {
             this.logger = logger;
             this.relays = relays;
         }
 
+        /// <summary>
+        /// Return communicator list from Nostr relay URI
+        /// </summary>
+        /// <param name="relays">Nostr relay uris.</param>
+        /// <returns>Nostr webSocket communicator list.</returns>
         private List<NostrWebsocketCommunicator> CreateCommunicators(Uri[] relays)
         {
             var communicators = new List<NostrWebsocketCommunicator>();
@@ -24,6 +37,11 @@ namespace NostrBotSharp.Wrapper
             return communicators;
         }
 
+        /// <summary>
+        /// Set communicator parameters.
+        /// </summary>
+        /// <param name="comm">Nostr websocket communicator.</param>
+        /// <param name="uri">Nostr relay uri.</param>
         private void SetCommunicatorParam(NostrWebsocketCommunicator comm, Uri uri)
         {
             comm.Name = uri.Host;
@@ -46,6 +64,10 @@ namespace NostrBotSharp.Wrapper
                     info.CloseStatus));
         }
 
+        /// <summary>
+        /// Return communicator from Nostr relay URI
+        /// </summary>
+        /// <param name="uri">Nostr relay uri.</param>
         private NostrWebsocketCommunicator CreateCommunicator(Uri uri)
         {
             var comm = new NostrWebsocketCommunicator(uri, () =>
@@ -60,6 +82,10 @@ namespace NostrBotSharp.Wrapper
             return comm;
         }
 
+        /// <summary>
+        /// Connect with Nostr relay.
+        /// </summary>
+        /// <returns></returns>
         public INostrClient Connect()
         {
             this.communicators = CreateCommunicators(this.relays);
@@ -68,11 +94,17 @@ namespace NostrBotSharp.Wrapper
                 this.communicators.ToArray());
         }
 
+        /// <summary>
+        /// Communication with Nostr relay.
+        /// </summary>
         public void Communicate()
         {
             this.communicators.ForEach(x => x.Start());
         }
 
+        /// <summary>
+        /// Disconnect Nostr relay.
+        /// </summary>
         public async void Disconnect()
         {
             foreach (var communicator in this.communicators)

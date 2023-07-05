@@ -2,6 +2,10 @@
 
 namespace NostrBotSharp.Wrapper
 {
+    /// <summary>
+    /// Nostr logger
+    /// </summary>
+    /// <typeparam name="T">Logging target</typeparam>
     public class NostrLogger<T> : ILogger<T>
     {
         public static readonly NostrLogger<T> Instance = new NostrLogger<T>();

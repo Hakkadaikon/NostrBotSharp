@@ -7,12 +7,19 @@ namespace NostrBotSharp
 {
     class Program
     {
+        /// <summary>
+        /// Callback when subscribed.
+        /// </summary>
+        /// <param name="response"></param>
         public static void Subscribe(NostrEventResponse response)
         {
             // Subscribe callback.
         }
 
-        public static void Main(String[] Args)
+        /// <summary>
+        /// Entry point.
+        /// </summary>
+        public static void Main()
         {
             var relays = new[]
             {
