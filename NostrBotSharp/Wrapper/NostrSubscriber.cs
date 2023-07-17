@@ -40,7 +40,7 @@ namespace NostrBotSharp.Wrapper
         /// </summary>
         public void Subscribe()
         {
-            IObservable<NostrEventResponse> events = 
+            IObservable<NostrEventResponse> events =
                 this.client.Streams.EventStream.Where(x => x.Event != null);
 
             _ = events.Subscribe(

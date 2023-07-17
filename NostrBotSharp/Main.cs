@@ -1,8 +1,8 @@
 ﻿using Nostr.Client.Client;
-using Nostr.Client.Responses;
-using NostrBotSharp.Wrapper;
 using Nostr.Client.Messages;
 using Nostr.Client.Messages.Metadata;
+using Nostr.Client.Responses;
+using NostrBotSharp.Wrapper;
 
 namespace NostrBotSharp
 {
@@ -10,10 +10,10 @@ namespace NostrBotSharp
     {
         static NostrSender sender;
 
-        static NostrEventMap noteMap = 
+        static NostrEventMap noteMap =
             new NostrEventMap(NostrKind.ShortTextNote, 1000);
 
-        static NostrEventMap reactionMap = 
+        static NostrEventMap reactionMap =
             new NostrEventMap(NostrKind.Reaction);
 
         static NostrEventMap contactsMap =
@@ -31,7 +31,7 @@ namespace NostrBotSharp
         public static void Subscribe(NostrEventResponse response)
         {
             var ev = response.Event;
- 
+
             switch (ev.Kind)
             {
                 case NostrKind.ShortTextNote:
@@ -88,9 +88,10 @@ namespace NostrBotSharp
                     // Subscribe callback.
                     Console.WriteLine("---------------------------------");
                     Console.WriteLine("note id      :" + ev.Id);
+                    Console.WriteLine("datetime     : " + NostrDate.ConvertToString(ev.CreatedAt));
                     Console.WriteLine("display_name :" + displayName);
                     Console.WriteLine("name         :" + name);
-                    Console.WriteLine("content :\r\n" + ev.Content);
+                    Console.WriteLine("content      :\r\n" + ev.Content);
 
                     noteMap.Remove(item.Key);
                     Thread.Sleep(100);

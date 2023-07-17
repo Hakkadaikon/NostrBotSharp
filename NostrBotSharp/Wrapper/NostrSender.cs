@@ -121,10 +121,10 @@ namespace NostrBotSharp.Wrapper
                 CreatedAt = DateTime.UtcNow,
                 Content = content,
             };
-            
+
             var key = NostrPrivateKey.FromBech32(myPrivateKeyHex);
             var signed = ev.Sign(key);
-            
+
             client.Send(new NostrEventRequest(signed));
         }
 
@@ -150,10 +150,10 @@ namespace NostrBotSharp.Wrapper
                 CreatedAt = DateTime.UtcNow,
                 Content = content,
             };
-            
+
             var key = NostrPrivateKey.FromBech32(myPrivateKeyHex);
             var signed = ev.Sign(key);
-            
+
             client.Send(new NostrEventRequest(signed));
         }
 
@@ -170,10 +170,10 @@ namespace NostrBotSharp.Wrapper
                 CreatedAt = DateTime.UtcNow,
                 Content = content
             };
-            
+
             var key = NostrPrivateKey.FromBech32(myPrivateKeyHex);
             var signed = ev.Sign(key);
-            
+
             client.Send(new NostrEventRequest(signed));
         }
     }

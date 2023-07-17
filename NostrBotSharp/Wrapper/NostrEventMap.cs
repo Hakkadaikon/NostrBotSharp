@@ -1,14 +1,5 @@
-﻿using NBitcoin.RPC;
-using Nostr.Client.Messages;
+﻿using Nostr.Client.Messages;
 using Nostr.Client.Responses;
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NostrBotSharp.Wrapper
 {
@@ -17,6 +8,7 @@ namespace NostrBotSharp.Wrapper
         private readonly Dictionary<string, NostrEventResponse> map;
         private readonly NostrKind kind;
         private readonly uint numOfEvents;
+        private object syncObject = new Object();
 
         public NostrEventMap(NostrKind kind, uint numOfEvents = 0)
         {
@@ -25,7 +17,7 @@ namespace NostrBotSharp.Wrapper
             this.numOfEvents = numOfEvents;
         }
 
-        public void Organize()
+        private void Organize()
         {
             if (this.numOfEvents == 0)
             {
@@ -56,49 +48,77 @@ namespace NostrBotSharp.Wrapper
 
         public void Remove(string id)
         {
+            bool lockToken = false;
+            Monitor.Enter(syncObject, ref lockToken);
             this.map.Remove(id);
+            if (lockToken)
+            {
+                Monitor.Exit(syncObject);
+            }
         }
 
         public bool ContainsKey(string id)
         {
-            return this.map.ContainsKey(id);
+            bool lockToken = false;
+            Monitor.Enter(syncObject, ref lockToken);
+            bool containsKey = this.map.ContainsKey(id);
+            if (lockToken)
+            {
+                Monitor.Exit(syncObject);
+            }
+
+            return containsKey;
         }
 
         public NostrEventResponse Get(string id)
         {
-            return this.map[id];
+            bool lockToken = false;
+            Monitor.Enter(syncObject, ref lockToken);
+            NostrEventResponse response = this.map[id];
+            if (lockToken)
+            {
+                Monitor.Exit(syncObject);
+            }
+
+            return response;
         }
 
         public void Push(string id, NostrEventResponse response)
         {
-            NostrEventAnalyzer.Validate(response.Event);
-
-            if (string.IsNullOrEmpty(id) ||
-                response.Event.Kind != this.kind)
-            {
-                return;
-            }
-
-            if (this.map.ContainsKey(id))
-            {
-                if (
-                 response.Event.CreatedAt.Value.Ticks >
-                 this.map[id].Event.CreatedAt.Value.Ticks)
-                 {
-                    this.map[id] = response;
-                    return;
-                 }
-            }
+            bool lockToken = false;
+            Monitor.Enter(syncObject, ref lockToken);
 
             try
             {
+                NostrEventAnalyzer.Validate(response.Event);
+                if (string.IsNullOrEmpty(id) ||
+                    response.Event.Kind != this.kind)
+                {
+                    goto FINALIZE;
+                }
+
+                if (this.map.ContainsKey(id))
+                {
+                    if (
+                     response.Event.CreatedAt.Value.Ticks >
+                     this.map[id].Event.CreatedAt.Value.Ticks)
+                    {
+                        this.map[id] = response;
+                        goto FINALIZE;
+                    }
+                }
+
                 this.map.Add(id, response);
             }
             catch (Exception ex)
             {
             }
-            
-            Organize();
+
+        FINALIZE:
+            if (lockToken)
+            {
+                Monitor.Exit(syncObject);
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Nostr.Client.Messages;
 using Nostr.Client.Messages.Contacts;
 using Nostr.Client.Messages.Metadata;
-using Nostr.Client.Responses;
 
 namespace NostrBotSharp.Wrapper
 {
@@ -20,7 +19,7 @@ namespace NostrBotSharp.Wrapper
                 throw new ArgumentNullException();
             }
         }
-        
+
         public static class Contact
         {
             public static List<string> GetRelays(NostrContactEvent ev)
@@ -50,17 +49,17 @@ namespace NostrBotSharp.Wrapper
                     return defaultDisplayName;
                 }
 
-                string displayName1 = null; 
+                string displayName1 = null;
                 string displayName2 = null;
                 try
                 {
-                    displayName1  = (string)ev.Metadata.AdditionalData["display_name"];
+                    displayName1 = (string)ev.Metadata.AdditionalData["display_name"];
                 }
                 catch (Exception)
                 {
                     try
                     {
-                        displayName2  = (string)ev.Metadata.AdditionalData["displayName"];
+                        displayName2 = (string)ev.Metadata.AdditionalData["displayName"];
                     }
                     catch (Exception)
                     {
