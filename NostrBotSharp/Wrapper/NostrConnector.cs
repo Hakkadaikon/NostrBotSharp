@@ -49,19 +49,34 @@ namespace NostrBotSharp.Wrapper
             comm.ErrorReconnectTimeout = TimeSpan.FromSeconds(60);
 
             comm.ReconnectionHappened.Subscribe(
-                info =>
-                Console.WriteLine(
-                    "[{relay}] Reconnection happened, type: {type}",
-                    comm.Name,
-                    info.Type));
+                (info) =>
+                {
+                    Console.BackgroundColor = ConsoleColor.Yellow;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.WriteLine(
+                        "[{0}] Reconnection happened, type: {1}",
+                        comm.Name,
+                        info.Type);
+                    Console.ResetColor();
+                });
 
             comm.DisconnectionHappened.Subscribe(
-                info =>
-                Console.WriteLine(
-                    "[{relay}] Disconnection happened, type: {type}, reason: {reason}",
-                    comm.Name,
-                    info.Type,
-                    info.CloseStatus));
+                (info) =>
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(
+                        "[{0}] Disconnection happened, Type: [{1}], Ex: [{2}] innerEx [{3}]",
+                        comm.Name,
+                        info.Type.ToString(),
+                        info.Exception != null ?
+                            info.Exception.Message :
+                            "",
+                        info.Exception.InnerException != null ?
+                            info.Exception.InnerException.Message : 
+                            "");
+                    Console.ResetColor();
+                });
         }
 
         /// <summary>

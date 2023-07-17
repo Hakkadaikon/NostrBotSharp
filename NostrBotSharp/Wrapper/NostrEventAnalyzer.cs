@@ -1,14 +1,26 @@
 ﻿using Nostr.Client.Messages;
 using Nostr.Client.Messages.Contacts;
 using Nostr.Client.Messages.Metadata;
+using Nostr.Client.Responses;
 
 namespace NostrBotSharp.Wrapper
 {
     /// <summary>
     /// Class for analyzing Nostr event.
     /// </summary>
-    public class NostrEventAnalyzer
+    public static class NostrEventAnalyzer
     {
+        public static void Validate(NostrEvent? ev)
+        {
+            if ((ev == null) ||
+                (string.IsNullOrEmpty(ev.Id)) ||
+                (string.IsNullOrEmpty(ev.Pubkey))
+                )
+            {
+                throw new ArgumentNullException();
+            }
+        }
+        
         public static class Contact
         {
             public static List<string> GetRelays(NostrContactEvent ev)
@@ -38,21 +50,41 @@ namespace NostrBotSharp.Wrapper
                     return defaultDisplayName;
                 }
 
+                string displayName1 = null; 
+                string displayName2 = null;
                 try
                 {
-                    return (string)ev.Metadata.AdditionalData["display_name"];
+                    displayName1  = (string)ev.Metadata.AdditionalData["display_name"];
                 }
                 catch (Exception)
                 {
                     try
                     {
-                        return (string)ev.Metadata.AdditionalData["displayName"];
+                        displayName2  = (string)ev.Metadata.AdditionalData["displayName"];
                     }
                     catch (Exception)
                     {
                         return defaultDisplayName;
                     }
-                }                
+                }
+
+                return displayName1 ?? displayName2;
+            }
+
+            public static string GetName(NostrMetadataEvent ev)
+            {
+                string defaultDisplayName = "Unknown";
+                if (ev.Metadata == null)
+                {
+                    return defaultDisplayName;
+                }
+
+                if (string.IsNullOrEmpty(ev.Metadata.Name))
+                {
+                    return defaultDisplayName;
+                }
+
+                return ev.Metadata.Name;
             }
         }
 

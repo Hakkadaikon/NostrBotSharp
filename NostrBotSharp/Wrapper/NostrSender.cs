@@ -44,21 +44,34 @@ namespace NostrBotSharp.Wrapper
         /// Request contact data to nostr relay.
         /// </summary>
         /// <param name="pubkey">Public key of target poster to get followers.</param>
-        public void RequestContacts(string pubkey)
+        public void RequestContacts(string pubkey = "")
         {
+            if (!string.IsNullOrEmpty(pubkey))
+            {
+                this.client.Send(
+                    new NostrRequest("timeline:pubkey:follows",
+                    new NostrFilter
+                    {
+                        Authors = new[]
+                        {
+                            pubkey
+                        },
+                        Kinds = new[]
+                        {
+                            NostrKind.Contacts
+                        },
+                    }));
+                return;
+            }
+
             this.client.Send(
                 new NostrRequest("timeline:pubkey:follows",
                 new NostrFilter
                 {
-                    Authors = new[]
-                    {
-                        pubkey
-                    },
                     Kinds = new[]
                     {
                         NostrKind.Contacts
                     },
-                    Limit = 1
                 }));
         }
 

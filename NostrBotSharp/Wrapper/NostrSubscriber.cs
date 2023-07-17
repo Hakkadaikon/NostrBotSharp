@@ -21,14 +21,7 @@ namespace NostrBotSharp.Wrapper
         /// <exception cref="ArgumentNullException">Exception when event data is null</exception>
         private void Validate(NostrEventResponse response)
         {
-            if ((response.Event == null) ||
-                (string.IsNullOrEmpty(response.Event.Id)) ||
-                (string.IsNullOrEmpty(response.Event.Pubkey)) ||
-                (string.IsNullOrEmpty(response.Event.Content))
-                )
-            {
-                throw new ArgumentNullException();
-            }
+            NostrEventAnalyzer.Validate(response.Event);
         }
 
         /// <summary>
