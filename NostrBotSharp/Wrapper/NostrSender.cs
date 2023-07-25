@@ -103,16 +103,16 @@ namespace NostrBotSharp.Wrapper
         /// Reaction to specified reaction.
         /// </summary>
         /// <param name="myPrivateKeyHex">Private key of the posting account.</param>
-        /// <param name="targetUserPubkey">Public key of the Note to be reacted.</param>
-        /// <param name="targetNoteId">Note id of the note to be reacted.</param>
+        /// <param name="targetUserPubkeyHex">Public key of the Note to be reacted.</param>
+        /// <param name="targetNoteIdHex">Note id of the note to be reacted.</param>
         /// <param name="content">Content to reaction</param>
         public void Reaction(
-            string myPrivateKeyHex, string targetUserPubkey, string targetNoteId, string content)
+            string myPrivateKeyHex, string targetUserPubkeyHex, string targetNoteIdHex, string content)
         {
             var tags = new NostrEventTagsMutable
             {
-                new NostrEventTag(NostrEventTag.ProfileIdentifier, targetUserPubkey),
-                new NostrEventTag(NostrEventTag.EventIdentifier, targetNoteId)
+                new NostrEventTag(NostrEventTag.ProfileIdentifier, targetUserPubkeyHex, ""),
+                new NostrEventTag(NostrEventTag.EventIdentifier, targetNoteIdHex, ""),
             };
 
             var ev = new NostrEvent
@@ -120,9 +120,10 @@ namespace NostrBotSharp.Wrapper
                 Kind = NostrKind.Reaction,
                 CreatedAt = DateTime.UtcNow,
                 Content = content,
+                Tags = tags
             };
 
-            var key = NostrPrivateKey.FromBech32(myPrivateKeyHex);
+            var key = NostrPrivateKey.FromHex(myPrivateKeyHex);
             var signed = ev.Sign(key);
 
             client.Send(new NostrEventRequest(signed));
@@ -136,12 +137,12 @@ namespace NostrBotSharp.Wrapper
         /// <param name="targetNoteId">Note id of the note to be posted.</param>
         /// <param name="content">Content to reply</param>
         public void Reply(
-            string myPrivateKeyHex, string targetUserPubkey, string targetNoteId, string content)
+            string myPrivateKeyHex, string targetUserPubkeyHex, string targetNoteIdHex, string content)
         {
             var tags = new NostrEventTagsMutable
             {
-                new NostrEventTag(NostrEventTag.ProfileIdentifier, targetUserPubkey),
-                new NostrEventTag(NostrEventTag.EventIdentifier, targetNoteId)
+                new NostrEventTag(NostrEventTag.ProfileIdentifier, targetUserPubkeyHex, ""),
+                new NostrEventTag(NostrEventTag.EventIdentifier, targetNoteIdHex, "")
             };
 
             var ev = new NostrEvent
@@ -149,9 +150,10 @@ namespace NostrBotSharp.Wrapper
                 Kind = NostrKind.ShortTextNote,
                 CreatedAt = DateTime.UtcNow,
                 Content = content,
+                Tags = tags
             };
 
-            var key = NostrPrivateKey.FromBech32(myPrivateKeyHex);
+            var key = NostrPrivateKey.FromHex(myPrivateKeyHex);
             var signed = ev.Sign(key);
 
             client.Send(new NostrEventRequest(signed));
@@ -171,7 +173,7 @@ namespace NostrBotSharp.Wrapper
                 Content = content
             };
 
-            var key = NostrPrivateKey.FromBech32(myPrivateKeyHex);
+            var key = NostrPrivateKey.FromHex(myPrivateKeyHex);
             var signed = ev.Sign(key);
 
             client.Send(new NostrEventRequest(signed));

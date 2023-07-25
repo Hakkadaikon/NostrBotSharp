@@ -132,9 +132,11 @@ namespace NostrBotSharp
 
             ViewTimeline();
 
-            // Post to relay.
-            var myPrivateKeyHex = "";
+            // Send message to relay.
+            var myPrivateKeyHex = "privateKey(Hex)";
             sender.Post(myPrivateKeyHex, "Test");
+            sender.Reply(myPrivateKeyHex, "targetUserPubkey(Hex)", "targetNodeId(Hex)", "test note");
+            sender.Reaction(myPrivateKeyHex, "targetUserPubkey(Hex)", "targetNodeId(Hex)", "+");
         }
     }
 }

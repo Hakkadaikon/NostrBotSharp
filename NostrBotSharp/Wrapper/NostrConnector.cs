@@ -72,7 +72,7 @@ namespace NostrBotSharp.Wrapper
                         info.Exception != null ?
                             info.Exception.Message :
                             "",
-                        info.Exception.InnerException != null ?
+                        info.Exception != null && info.Exception.InnerException != null ?
                             info.Exception.InnerException.Message :
                             "");
                     Console.ResetColor();
